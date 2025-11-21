@@ -65,15 +65,16 @@ app.get('/', (req, res) => {
 
             body {
                 /* Deep Void Haki Background */
-                background: radial-gradient(circle at 50% 50%, #1a0033 0%, #000000 90%);
+                background: radial-gradient(circle at 50% 50%, #120021 0%, #000000 95%);
                 font-family: 'Outfit', sans-serif;
-                height: 100vh;
+                min-height: 100vh;
                 overflow: hidden;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 color: var(--c-text-primary);
-                cursor: default; 
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
             }
 
             /* --- BACKGROUND CANVAS --- */
@@ -88,22 +89,31 @@ app.get('/', (req, res) => {
                 position: relative;
                 z-index: 10;
             }
-
             .divine-card {
-                width: 1050px;
-                height: 650px;
+                width: min(1000px, 94vw);
+                max-width: 1050px;
+                height: auto;
+                min-height: 520px;
                 /* DARK GLASS to match background */
-                background: rgba(20, 5, 40, 0.75);
-                backdrop-filter: blur(30px);
-                -webkit-backdrop-filter: blur(30px);
-                border: 1px solid rgba(188, 19, 254, 0.3);
-                border-radius: 24px;
+                background: linear-gradient(180deg, rgba(22,6,45,0.78), rgba(12,4,28,0.65));
+                backdrop-filter: blur(18px);
+                -webkit-backdrop-filter: blur(18px);
+                border: 1px solid rgba(188, 19, 254, 0.18);
+                border-radius: 18px;
                 display: flex;
-                overflow: hidden;
-                box-shadow: 
-                    0 20px 80px rgba(0,0,0,0.8),
-                    0 0 0 1px rgba(188, 19, 254, 0.1) inset,
-                    0 0 30px rgba(139, 0, 255, 0.1); /* Subtle Haki Glow */
+                gap: 0;
+                overflow: visible;
+                box-shadow:
+                    0 18px 48px rgba(0,0,0,0.7),
+                    0 0 0 1px rgba(188, 19, 254, 0.06) inset;
+                transform-origin: center;
+                opacity: 0;
+                transform: translateY(12px) scale(0.995);
+                animation: cardIn 700ms cubic-bezier(.2,.9,.3,1) forwards;
+            }
+
+            @keyframes cardIn {
+                to { opacity: 1; transform: translateY(0) scale(1); }
             }
 
             /* --- LEFT: VISUALS (Gear 5) --- */
@@ -121,12 +131,12 @@ app.get('/', (req, res) => {
                 /* Mask to blend image into dark card */
                 mask-image: linear-gradient(to right, black 80%, transparent 100%);
                 -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
-                transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-                filter: saturate(1.1) contrast(1.1);
+                transition: transform 900ms cubic-bezier(0.2, 0.9, 0.2, 1), filter 600ms;
+                filter: saturate(1.05) contrast(1.05) brightness(0.95);
             }
 
             .divine-card:hover .hero-bg {
-                transform: scale(1.03);
+                transform: scale(1.04) translateX(-6px);
             }
 
             /* Quote Bubble - Dark Theme */
@@ -160,6 +170,9 @@ app.get('/', (req, res) => {
                 /* Dark gradient for right side */
                 background: linear-gradient(135deg, rgba(30, 10, 50, 0.4) 0%, rgba(10, 5, 20, 0.6) 100%);
             }
+
+            /* Make inner content flow nicely on smaller heights */
+            .info-side .wanted-poster-wrapper { margin-top: 6px; }
 
             .header-badge {
                 font-family: 'Cinzel', serif;
@@ -196,8 +209,11 @@ app.get('/', (req, res) => {
                     inset 0 0 40px rgba(0,0,0,0.1);
                 text-align: center;
                 position: relative;
-                transform: rotate(2deg);
-                border: 1px solid #bdafa0;
+                transform: rotate(1deg);
+                border: 1px solid #c1b19a;
+                transition: transform 420ms cubic-bezier(.2,.9,.2,1), box-shadow 420ms;
+                transform-origin: center center;
+                will-change: transform;
                 /* Paper Texture */
                 background-image: repeating-linear-gradient(
                     0deg,
@@ -206,6 +222,13 @@ app.get('/', (req, res) => {
                     rgba(0, 0, 0, 0.02) 2px,
                     rgba(0, 0, 0, 0.02) 3px
                 );
+            }
+
+            /* Subtle 3D tilt interaction */
+            .wanted-poster-wrapper { display: inline-block; }
+
+            .wanted-poster.tilt {
+                box-shadow: 0 30px 60px rgba(0,0,0,0.5);
             }
 
             /* Ripped Paper / Worn Effect overlay */
@@ -270,13 +293,31 @@ app.get('/', (req, res) => {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                filter: sepia(0.5) contrast(1.2) brightness(0.9);
-                transition: transform 0.3s;
+                filter: sepia(0.45) contrast(1.05) brightness(0.95);
+                transition: transform 520ms cubic-bezier(.2,.9,.2,1);
+                transform-origin: center center;
             }
             
             .wanted-poster:hover .poster-img {
-                transform: scale(1.05);
+                transform: scale(1.06) rotate(-0.6deg);
             }
+
+            /* Small circular avatar overlay */
+            .avatar-overlay {
+                position: absolute;
+                top: -34px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 72px;
+                height: 72px;
+                border-radius: 50%;
+                overflow: hidden;
+                border: 3px solid rgba(255,255,255,0.9);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+                background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.06));
+            }
+
+            .avatar-overlay img { width: 100%; height: 100%; object-fit: cover; }
 
             .poster-name {
                 font-family: 'Playfair Display', serif;
@@ -289,6 +330,8 @@ app.get('/', (req, res) => {
                 word-break: break-word;
                 letter-spacing: -0.5px;
             }
+
+            .poster-meta { color: #6b5846; font-size: 0.85rem; margin-bottom: 8px; }
 
             .poster-bounty-row {
                 display: flex;
@@ -406,49 +449,46 @@ app.get('/', (req, res) => {
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-            // --- SMOOTH PURPLE/RED PARTICLES ---
+            // --- EFFICIENT, SMOOTH PARTICLES ---
             const particlesGeometry = new THREE.BufferGeometry();
-            const particlesCount = 2500;
+            // reduced count gives smoother performance and cleaner look
+            const particlesCount = 1200;
             
             const posArray = new Float32Array(particlesCount * 3);
             const colorArray = new Float32Array(particlesCount * 3);
-            const offsetArray = new Float32Array(particlesCount); // Random offsets for wave motion
+            const offsetArray = new Float32Array(particlesCount); // Random offsets for motion
 
-            // Simple Palette: Purple & Dark Red
-            const colorPurple = new THREE.Color(0x8b00ff); // Electric Purple
-            const colorRed = new THREE.Color(0x8b0000);    // Dark Red
-            const colorDeep = new THREE.Color(0x4b0082);   // Indigo
+            // Palette: Purple & Dark Red
+            const colorPurple = new THREE.Color(0x8b00ff);
+            const colorRed = new THREE.Color(0x8b0000);
+            const colorDeep = new THREE.Color(0x4b0082);
 
             for(let i = 0; i < particlesCount; i++) {
-                // Spread particles across the screen depth
-                posArray[i * 3] = (Math.random() - 0.5) * 150;
-                posArray[i * 3 + 1] = (Math.random() - 0.5) * 100;
-                posArray[i * 3 + 2] = (Math.random() - 0.5) * 100;
+                posArray[i * 3] = (Math.random() - 0.5) * 140; // x
+                posArray[i * 3 + 1] = (Math.random() - 0.5) * 90; // y
+                posArray[i * 3 + 2] = (Math.random() - 0.5) * 110; // z
 
                 const rand = Math.random();
-                let mixedColor;
-                
-                if (rand > 0.6) mixedColor = colorPurple;
-                else if (rand > 0.3) mixedColor = colorRed;
-                else mixedColor = colorDeep;
+                let mixedColor = colorDeep;
+                if (rand > 0.66) mixedColor = colorPurple;
+                else if (rand > 0.33) mixedColor = colorRed;
 
                 colorArray[i * 3] = mixedColor.r;
                 colorArray[i * 3 + 1] = mixedColor.g;
                 colorArray[i * 3 + 2] = mixedColor.b;
-                
-                offsetArray[i] = Math.random() * 100; // For sine wave randomness
+
+                offsetArray[i] = Math.random() * Math.PI * 2;
             }
 
             particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
             particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
             particlesGeometry.setAttribute('offset', new THREE.BufferAttribute(offsetArray, 1));
 
-            // Soft, glowing round particles
             const particlesMaterial = new THREE.PointsMaterial({
-                size: 0.4,
+                size: 0.6,
                 vertexColors: true,
                 transparent: true,
-                opacity: 0.8,
+                opacity: 0.85,
                 blending: THREE.AdditiveBlending,
                 sizeAttenuation: true
             });
@@ -456,14 +496,17 @@ app.get('/', (req, res) => {
             const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
             scene.add(particlesMesh);
 
+            // Keep a stable copy of initial positions to avoid cumulative drift
+            const initialPositions = new Float32Array(posArray);
+
             // --- ANIMATION LOOP ---
             let mouseX = 0;
             let mouseY = 0;
-            
+
             document.addEventListener('mousemove', (event) => {
                 mouseX = (event.clientX / window.innerWidth - 0.5) * 2;
                 mouseY = (event.clientY / window.innerHeight - 0.5) * 2;
-            });
+            }, { passive: true });
 
             const clock = new THREE.Clock();
 
@@ -473,31 +516,30 @@ app.get('/', (req, res) => {
                 const positions = particlesMesh.geometry.attributes.position.array;
                 const offsets = particlesMesh.geometry.attributes.offset.array;
 
+                // compute positions fresh from base, using smooth sin-based motion
                 for(let i = 0; i < particlesCount; i++) {
                     const i3 = i * 3;
-                    
-                    // Gentle Sine Wave Motion
-                    // Move based on time + random offset
-                    // Y-axis: drift up slowly
-                    positions[i3 + 1] += 0.02; 
-                    
-                    // X-axis: mild sway
-                    positions[i3] += Math.sin(time * 0.5 + offsets[i]) * 0.02;
+                    const baseX = initialPositions[i3];
+                    const baseY = initialPositions[i3 + 1];
+                    const baseZ = initialPositions[i3 + 2];
 
-                    // Reset if particles go too high
-                    if(positions[i3 + 1] > 50) {
-                        positions[i3 + 1] = -50;
-                    }
+                    const off = offsets[i];
+                    const sway = Math.sin(time * 0.35 + off) * 2.5;
+                    const bob = Math.sin(time * 0.7 + off * 0.5) * 1.6;
+
+                    positions[i3] = baseX + sway + mouseX * 8;
+                    positions[i3 + 1] = baseY + bob + Math.sin(off * 0.25 + time * 0.15) * 0.8;
+                    positions[i3 + 2] = baseZ + Math.cos(time * 0.12 + off) * 1.5 + mouseY * 10;
                 }
                 particlesMesh.geometry.attributes.position.needsUpdate = true;
 
-                // Whole system rotation
-                particlesMesh.rotation.y = time * 0.05;
-                particlesMesh.rotation.z = time * 0.02;
+                // Gentle rotation for depth
+                particlesMesh.rotation.y = Math.sin(time * 0.03) * 0.08;
+                particlesMesh.rotation.z = Math.sin(time * 0.02) * 0.03;
 
-                // Slight Mouse Parallax
-                particlesMesh.rotation.x += (mouseY * 0.05 - particlesMesh.rotation.x) * 0.05;
-                particlesMesh.rotation.y += (mouseX * 0.05 - particlesMesh.rotation.y) * 0.05;
+                // Slight Mouse Parallax (smoothed)
+                particlesMesh.rotation.x += (mouseY * 0.02 - particlesMesh.rotation.x) * 0.06;
+                particlesMesh.rotation.y += (mouseX * 0.02 - particlesMesh.rotation.y) * 0.06;
 
                 renderer.render(scene, camera);
                 requestAnimationFrame(animate);
@@ -511,6 +553,28 @@ app.get('/', (req, res) => {
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
+
+            // Poster 3D tilt interaction
+            (function posterTilt() {
+                const wrapper = document.querySelector('.wanted-poster-wrapper');
+                const poster = document.querySelector('.wanted-poster');
+                if(!wrapper || !poster) return;
+
+                wrapper.addEventListener('mousemove', (e) => {
+                    const rect = wrapper.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    const rx = (y * 8).toFixed(2);
+                    const ry = (x * -10).toFixed(2);
+                    poster.style.transform = 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) rotateZ(1deg)';
+                    poster.classList.add('tilt');
+                }, { passive: true });
+
+                wrapper.addEventListener('mouseleave', () => {
+                    poster.style.transform = 'rotate(1deg)';
+                    poster.classList.remove('tilt');
+                });
+            })();
         </script>
 
     </body>
