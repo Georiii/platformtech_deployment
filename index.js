@@ -18,7 +18,7 @@ const userData = {
     name: "Francis Andrei Anciado",
     role: "Warrior of Liberation",
     section: "BSIT SM4102",
-    bounty: 5000000000,
+    bounty: 500000000,
     quote: "As long as I live, there are infinite chances!",
     author: "Sun God Nika"
 };
